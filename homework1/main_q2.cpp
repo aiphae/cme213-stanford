@@ -1,42 +1,39 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <memory>
 
-/* TODO: Make Matrix a pure abstract class with the 
- * public method:
- *     std::string repr()
- */
 class Matrix {
+public:
+    virtual std::string repr() const = 0;
+    virtual ~Matrix() = default;
 };
 
-/* TODO: Modify the following function so that it 
- * inherits from the Matrix class */
-class SparseMatrix {
+class SparseMatrix : public Matrix {
 public:
-    std::string repr() {
+    std::string repr() const override {
         return "sparse";
     }
 };
 
-/* TODO: Modify the following function so that it 
- * inherits from the Matrix class */
-class ToeplitzMatrix {
+class ToeplitzMatrix : public Matrix {
 public:
-    std::string repr() {
+    std::string repr() const override {
         return "toeplitz";
     }
 };
 
-/* TODO: This function should accept a vector of Matrices and call the repr 
- * function on each matrix, printing the result to standard out. 
- */
-void PrintRepr() {
+void PrintRepr(std::vector<std::unique_ptr<Matrix>> &matrices) {
+    for (const auto &matrix : matrices) {
+        std::cout << matrix->repr() << " ";
+    }
+    std::cout << "\n";
 }
 
-/* TODO: Your main method should fill a vector with an instance of SparseMatrix
- * and an instance of ToeplitzMatrix and pass the resulting vector
- * to the PrintRepr function.
- */ 
 int main() {
+    std::vector<std::unique_ptr<Matrix>> matrices;
+    matrices.push_back(std::unique_ptr<SparseMatrix>(new SparseMatrix));
+    matrices.push_back(std::unique_ptr<ToeplitzMatrix>(new ToeplitzMatrix));
 
+    PrintRepr(matrices);
 }
